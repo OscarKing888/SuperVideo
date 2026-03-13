@@ -1,0 +1,5 @@
+# Install the local package so the CLI entrypoint is available after pip install.
+-e .
+
+# Used by the smoke tests to inspect generated JPG dimensions.
+Pillow>=12.1,<13
