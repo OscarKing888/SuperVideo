@@ -1,5 +1,5 @@
-# Install the local package so the CLI entrypoint is available after pip install.
+# Base dependencies (frame extraction only)
 -e .
 
-# Used by the smoke tests to inspect generated JPG dimensions.
+# For smoke tests
 Pillow>=12.1,<13

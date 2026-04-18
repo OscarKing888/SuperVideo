@@ -210,3 +210,22 @@ __marimo__/
 output/
 tmp_output/
 *_frames/
+
+# AI model weights (too large for git)
+models/*.pth
+models/*.pt
+src/supervideo_bird_classifier/models/*.pth
+src/supervideo_bird_classifier/models/*.pt
+
+# Local databases
+*.db
+*.sqlite
+!src/supervideo_bird_classifier/data/bird_reference.sqlite
+
+# Client settings
+.supervideo/
+
+# Go backend artifacts
+backend/data/
+backend/supervideo-server
+backend/supervideo-server.exe
