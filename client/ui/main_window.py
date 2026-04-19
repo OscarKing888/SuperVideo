@@ -29,7 +29,7 @@ from client.api.client import SuperVideoAPIClient
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("SuperVideo Client")
+        self.setWindowTitle("超级视频客户端")
         self.setMinimumSize(800, 600)
 
         self._settings_path = os.path.join(
@@ -63,27 +63,27 @@ class MainWindow(QMainWindow):
 
         # Directory selection row
         dir_row = QHBoxLayout()
-        dir_row.addWidget(QLabel("Video Directory:"))
+        dir_row.addWidget(QLabel("视频目录："))
         self._dir_edit = QLineEdit(self._settings.video_directory)
-        self._dir_edit.setPlaceholderText("Select a directory containing video files...")
+        self._dir_edit.setPlaceholderText("选择包含视频文件的目录...")
         dir_row.addWidget(self._dir_edit, 1)
-        browse_btn = QPushButton("Browse...")
+        browse_btn = QPushButton("浏览...")
         browse_btn.clicked.connect(self._browse_directory)
         dir_row.addWidget(browse_btn)
         layout.addLayout(dir_row)
 
         # Server settings group
-        server_group = QGroupBox("Server Connection")
+        server_group = QGroupBox("服务器连接")
         server_layout = QHBoxLayout()
         self._server_label = QLabel(
             f"{self._settings.server_host}:{self._settings.server_port}"
         )
         server_layout.addWidget(self._server_label)
         server_layout.addStretch()
-        settings_btn = QPushButton("Settings...")
+        settings_btn = QPushButton("设置...")
         settings_btn.clicked.connect(self._open_settings)
         server_layout.addWidget(settings_btn)
-        test_btn = QPushButton("Test Connection")
+        test_btn = QPushButton("测试连接")
         test_btn.clicked.connect(self._test_connection)
         server_layout.addWidget(test_btn)
         server_group.setLayout(server_layout)
@@ -91,19 +91,19 @@ class MainWindow(QMainWindow):
 
         # Action buttons
         btn_row = QHBoxLayout()
-        self._scan_btn = QPushButton("Scan Directory")
+        self._scan_btn = QPushButton("扫描目录")
         self._scan_btn.clicked.connect(self._start_scan)
         btn_row.addWidget(self._scan_btn)
 
-        self._process_btn = QPushButton("Start Processing")
+        self._process_btn = QPushButton("开始处理")
         self._process_btn.clicked.connect(self._start_processing)
         btn_row.addWidget(self._process_btn)
 
-        self._upload_btn = QPushButton("Upload to Server")
+        self._upload_btn = QPushButton("上传到服务器")
         self._upload_btn.clicked.connect(self._start_upload)
         btn_row.addWidget(self._upload_btn)
 
-        self._cancel_btn = QPushButton("Cancel")
+        self._cancel_btn = QPushButton("取消")
         self._cancel_btn.setEnabled(False)
         self._cancel_btn.clicked.connect(self._cancel_operation)
         btn_row.addWidget(self._cancel_btn)
@@ -135,13 +135,13 @@ class MainWindow(QMainWindow):
             pass
 
         self._statusbar.showMessage(
-            f"Videos: {total} | Completed: {completed} | GPU: {device_info} | DB: Local"
+            f"视频：{total} | 已完成：{completed} | GPU：{device_info} | 数据库：本地"
         )
 
     @Slot()
     def _browse_directory(self):
         directory = QFileDialog.getExistingDirectory(
-            self, "Select Video Directory", self._dir_edit.text()
+            self, "选择视频目录", self._dir_edit.text()
         )
         if directory:
             self._dir_edit.setText(directory)
@@ -161,15 +161,15 @@ class MainWindow(QMainWindow):
     def _test_connection(self):
         client = SuperVideoAPIClient(self._settings.server_url, self._settings.api_key)
         if client.test_connection():
-            QMessageBox.information(self, "Success", "Connected to server!")
+            QMessageBox.information(self, "成功", "已连接到服务器！")
         else:
-            QMessageBox.warning(self, "Failed", "Could not connect to server.")
+            QMessageBox.warning(self, "失败", "无法连接到服务器。")
 
     @Slot()
     def _start_scan(self):
         directory = self._dir_edit.text()
         if not directory or not os.path.isdir(directory):
-            QMessageBox.warning(self, "Error", "Please select a valid directory.")
+            QMessageBox.warning(self, "错误", "请选择有效的目录。")
             return
 
         self._settings.video_directory = directory
@@ -181,7 +181,7 @@ class MainWindow(QMainWindow):
         self._scan_worker = ScanWorker(directory, self._video_repo)
         self._scan_worker.progress.connect(self._progress.set_progress)
         self._scan_worker.video_found.connect(
-            lambda p: self._progress.append_log(f"Found: {os.path.basename(p)}")
+            lambda p: self._progress.append_log(f"已找到：{os.path.basename(p)}")
         )
         self._scan_worker.finished.connect(self._on_scan_finished)
         self._scan_worker.error.connect(self._on_error)
@@ -190,8 +190,8 @@ class MainWindow(QMainWindow):
     @Slot(int)
     def _on_scan_finished(self, count: int):
         self._set_buttons_busy(False)
-        self._progress.append_log(f"Scan complete: {count} new videos found.")
-        self._progress.set_stage("Scan complete")
+        self._progress.append_log(f"扫描完成：发现 {count} 个新视频。")
+        self._progress.set_stage("扫描完成")
         self._results.refresh()
         self._update_status()
 
@@ -223,8 +223,8 @@ class MainWindow(QMainWindow):
     @Slot()
     def _on_process_finished(self):
         self._set_buttons_busy(False)
-        self._progress.set_stage("Processing complete")
-        self._progress.append_log("All videos processed.")
+        self._progress.set_stage("处理完成")
+        self._progress.append_log("已处理所有视频。")
         self._results.refresh()
         self._update_status()
 
@@ -232,7 +232,7 @@ class MainWindow(QMainWindow):
     def _start_upload(self):
         videos = [v for v in self._video_repo.list_all() if v.status == "completed"]
         if not videos:
-            QMessageBox.information(self, "Info", "No completed videos to upload.")
+            QMessageBox.information(self, "提示", "没有可上传的已完成视频。")
             return
 
         for v in videos:
@@ -259,8 +259,8 @@ class MainWindow(QMainWindow):
     @Slot(int)
     def _on_upload_finished(self, count: int):
         self._set_buttons_busy(False)
-        self._progress.append_log(f"Upload complete: {count} videos uploaded.")
-        self._progress.set_stage("Upload complete")
+        self._progress.append_log(f"上传完成：已上传 {count} 个视频。")
+        self._progress.set_stage("上传完成")
 
     @Slot()
     def _cancel_operation(self):
@@ -271,13 +271,13 @@ class MainWindow(QMainWindow):
         if self._upload_worker and self._upload_worker.isRunning():
             self._upload_worker.cancel()
         self._set_buttons_busy(False)
-        self._progress.set_stage("Cancelled")
+        self._progress.set_stage("已取消")
 
     @Slot(str)
     def _on_error(self, message: str):
         self._set_buttons_busy(False)
-        self._progress.append_log(f"ERROR: {message}")
-        QMessageBox.critical(self, "Error", message)
+        self._progress.append_log(f"错误：{message}")
+        QMessageBox.critical(self, "错误", message)
 
     def _set_buttons_busy(self, busy: bool):
         self._scan_btn.setEnabled(not busy)

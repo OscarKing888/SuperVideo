@@ -20,7 +20,7 @@ class ProgressPanel(QWidget):
         progress_row = QHBoxLayout()
         self._progress_bar = QProgressBar()
         self._progress_bar.setRange(0, 100)
-        self._progress_label = QLabel("Ready")
+        self._progress_label = QLabel("就绪")
         progress_row.addWidget(self._progress_bar, 1)
         progress_row.addWidget(self._progress_label)
         layout.addLayout(progress_row)
@@ -60,6 +60,6 @@ class ProgressPanel(QWidget):
 
     def reset(self):
         self._progress_bar.setValue(0)
-        self._progress_label.setText("Ready")
+        self._progress_label.setText("就绪")
         self._stage_label.setText("")
         self._log_area.clear()

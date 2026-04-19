@@ -32,8 +32,8 @@ class ResultsPanel(QWidget):
 
         # Header
         header = QHBoxLayout()
-        header.addWidget(QLabel("Results"))
-        self._refresh_btn = QPushButton("Refresh")
+        header.addWidget(QLabel("结果"))
+        self._refresh_btn = QPushButton("刷新")
         self._refresh_btn.clicked.connect(self.refresh)
         header.addStretch()
         header.addWidget(self._refresh_btn)
@@ -42,7 +42,7 @@ class ResultsPanel(QWidget):
         # Video table
         self._table = QTableWidget()
         self._table.setColumnCount(4)
-        self._table.setHorizontalHeaderLabels(["Video", "Status", "Detections", "Species"])
+        self._table.setHorizontalHeaderLabels(["视频", "状态", "检测数", "物种"])
         self._table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self._table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
         self._table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
@@ -76,6 +76,6 @@ class ResultsPanel(QWidget):
         if species:
             top = species[:5]
             parts = [f"{s[0]} ({s[1] or '?'}) x{s[2]}" for s in top]
-            self._summary_label.setText(f"Top species: {', '.join(parts)}")
+            self._summary_label.setText(f"主要物种：{', '.join(parts)}")
         else:
             self._summary_label.setText("")

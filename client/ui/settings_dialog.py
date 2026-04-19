@@ -15,7 +15,7 @@ class SettingsDialog(QDialog):
     def __init__(self, settings: AppSettings, parent=None):
         super().__init__(parent)
         self.settings = settings
-        self.setWindowTitle("Settings")
+        self.setWindowTitle("设置")
         self.setMinimumWidth(500)
         self._build_ui()
         self._load_values()
@@ -24,33 +24,33 @@ class SettingsDialog(QDialog):
         layout = QVBoxLayout(self)
 
         # Server settings
-        server_group = QGroupBox("Central Server")
+        server_group = QGroupBox("中心服务器")
         server_form = QFormLayout()
         self._host_edit = QLineEdit()
         self._port_spin = QSpinBox()
         self._port_spin.setRange(1, 65535)
         self._api_key_edit = QLineEdit()
         self._api_key_edit.setEchoMode(QLineEdit.EchoMode.Password)
-        server_form.addRow("Host:", self._host_edit)
-        server_form.addRow("Port:", self._port_spin)
-        server_form.addRow("API Key:", self._api_key_edit)
+        server_form.addRow("主机：", self._host_edit)
+        server_form.addRow("端口：", self._port_spin)
+        server_form.addRow("API 密钥：", self._api_key_edit)
 
-        test_btn = QPushButton("Test Connection")
+        test_btn = QPushButton("测试连接")
         test_btn.clicked.connect(self._test_connection)
         server_form.addRow("", test_btn)
         server_group.setLayout(server_form)
         layout.addWidget(server_group)
 
         # Processing settings
-        proc_group = QGroupBox("Processing")
+        proc_group = QGroupBox("处理")
         proc_form = QFormLayout()
         self._frames_edit = QLineEdit()
-        self._frames_edit.setPlaceholderText("e.g. 5,10,30")
+        self._frames_edit.setPlaceholderText("例如 5,10,30")
         self._ffmpeg_edit = QLineEdit()
 
         ffmpeg_row = QHBoxLayout()
         ffmpeg_row.addWidget(self._ffmpeg_edit)
-        ffmpeg_browse = QPushButton("Browse")
+        ffmpeg_browse = QPushButton("浏览")
         ffmpeg_browse.clicked.connect(self._browse_ffmpeg)
         ffmpeg_row.addWidget(ffmpeg_browse)
 
@@ -59,22 +59,22 @@ class SettingsDialog(QDialog):
         self._confidence_spin.setSingleStep(0.05)
         self._confidence_spin.setDecimals(2)
 
-        proc_form.addRow("Frames:", self._frames_edit)
+        proc_form.addRow("帧:", self._frames_edit)
         proc_form.addRow("FFmpeg:", ffmpeg_row)
-        proc_form.addRow("Confidence:", self._confidence_spin)
+        proc_form.addRow("置信度:", self._confidence_spin)
         proc_group.setLayout(proc_form)
         layout.addWidget(proc_group)
 
         # Model paths
-        model_group = QGroupBox("AI Models")
+        model_group = QGroupBox("AI 模型")
         model_form = QFormLayout()
         self._yolo_edit = QLineEdit()
         self._osea_edit = QLineEdit()
 
-        for edit, label in [(self._yolo_edit, "YOLO Model:"), (self._osea_edit, "OSEA Model:")]:
+        for edit, label in [(self._yolo_edit, "YOLO 模型："), (self._osea_edit, "OSEA 模型：")]:
             row = QHBoxLayout()
             row.addWidget(edit)
-            btn = QPushButton("Browse")
+            btn = QPushButton("浏览")
             btn.clicked.connect(lambda _, e=edit: self._browse_model(e))
             row.addWidget(btn)
             model_form.addRow(label, row)
@@ -85,9 +85,9 @@ class SettingsDialog(QDialog):
         # Buttons
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
-        save_btn = QPushButton("Save")
+        save_btn = QPushButton("保存")
         save_btn.clicked.connect(self.accept)
-        cancel_btn = QPushButton("Cancel")
+        cancel_btn = QPushButton("取消")
         cancel_btn.clicked.connect(self.reject)
         btn_layout.addWidget(save_btn)
         btn_layout.addWidget(cancel_btn)
@@ -118,16 +118,16 @@ class SettingsDialog(QDialog):
         url = f"http://{self._host_edit.text()}:{self._port_spin.value()}"
         client = SuperVideoAPIClient(url, self._api_key_edit.text())
         if client.test_connection():
-            QMessageBox.information(self, "Success", "Connection successful!")
+            QMessageBox.information(self, "成功", "连接成功！")
         else:
-            QMessageBox.warning(self, "Failed", "Could not connect to server.")
+            QMessageBox.warning(self, "失败", "无法连接到服务器。")
 
     def _browse_ffmpeg(self):
-        path, _ = QFileDialog.getOpenFileName(self, "Select FFmpeg binary")
+        path, _ = QFileDialog.getOpenFileName(self, "选择 FFmpeg 可执行文件")
         if path:
             self._ffmpeg_edit.setText(path)
 
     def _browse_model(self, edit: QLineEdit):
-        path, _ = QFileDialog.getOpenFileName(self, "Select model file", "", "Model files (*.pt *.pth);;All files (*)")
+        path, _ = QFileDialog.getOpenFileName(self, "选择模型文件", "", "模型文件 (*.pt *.pth);;所有文件 (*)")
         if path:
             edit.setText(path)
