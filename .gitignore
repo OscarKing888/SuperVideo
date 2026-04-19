@@ -229,3 +229,4 @@ src/supervideo_bird_classifier/models/*.pt
 backend/data/
 backend/supervideo-server
 backend/supervideo-server.exe
+src/supervideo_bird_classifier/data/bird_reference.sqlite
