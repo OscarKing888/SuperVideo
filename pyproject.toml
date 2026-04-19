@@ -20,6 +20,8 @@ classifier = [
     "timm>=0.9",
     "numpy>=1.24",
     "opencv-python>=4.8",
+    "huggingface_hub>=0.20",
+    "tqdm>=4.65",
 ]
 client = [
     "PySide6>=6.6",
